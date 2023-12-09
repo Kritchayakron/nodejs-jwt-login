@@ -1,4 +1,6 @@
 const express = require("express")
+require('dotenv').config();
+const port = process.env.PORT || 3000;
 const {readdirSync} = require("fs")
 const morgan = require("morgan")
 const cors = require("cors")
@@ -12,4 +14,4 @@ app.use(bodyParse.json({limit:'10mb'}))
 readdirSync('./Routes').map((r)=>{
     app.use('/api',require('./Routes/'+r))
 });
-app.listen(5000,()=>console.log('Server is running!'))
+app.listen(port,()=>console.log('Server is running!',port))
