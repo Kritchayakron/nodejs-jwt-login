@@ -1,5 +1,5 @@
 const express = require("express")
-const config = require("./config"); 
+const config = require("./config")
 const {readdirSync} = require("fs")
 const morgan = require("morgan")
 const cors = require("cors")
@@ -7,11 +7,11 @@ const multer = require('multer')
 const bodyParser = require("body-parser")
 const connectDB = require("./config/database")
 const app = express()
-const upload = multer();
+const upload = multer()
 connectDB(config.database.uri);
 app.use(morgan('dev'))
 app.use(cors())
-app.use(bodyParser.json({limit:'10mb'}))
+app.use(bodyParser.json({limit:config.server.limit}))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array()); // Use multer to handle form-data
 readdirSync('./routes/api').map((r)=>{
