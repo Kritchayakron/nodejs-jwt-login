@@ -91,10 +91,6 @@ class UserController {
     static async login(req, res) {
         
         try{
-           
-            const errors = validationResult(req);
-            
-            console.log(errors);
             const {username , password} = req.body 
             if(!username || !password) {
                 return res.status(400).json({ status: 'Failed', message: 'Bad requrest' });
