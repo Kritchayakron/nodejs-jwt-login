@@ -1,8 +1,9 @@
 const User = require('../models/user')
 const bcrypt  = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-const mongoose = require('mongoose');
-const { validationResult } = require('express-validator');
+const mongoose = require('mongoose')
+const { body, validationResult } = require('express-validator')
+const config = process.env
 class UserController {
     // Create
     static async create(req, res) {
@@ -84,10 +85,16 @@ class UserController {
             return res.status(500).json({ status: 'Failed', message: error.message });
         }
     }
+    static async loginValidator(req){
 
+    }
     static async login(req, res) {
-       
+        
         try{
+           
+            const errors = validationResult(req);
+            
+            console.log(errors);
             const {username , password} = req.body 
             if(!username || !password) {
                 return res.status(400).json({ status: 'Failed', message: 'Bad requrest' });
@@ -99,7 +106,7 @@ class UserController {
                     const dataLogin = {
                         username:username
                     }
-                    jwt.sign(dataLogin, 'jwtsecret', { expiresIn: 10 }, (err, token) => {
+                    jwt.sign(dataLogin, config.SECRET_KEY, { expiresIn: '1h' }, (err, token) => {
                         if (err) {
                            // console.error(err);
                             return res.status(500).json({ status: 'Failed', message: 'Token generation failed' });
