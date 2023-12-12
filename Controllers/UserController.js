@@ -107,10 +107,10 @@ class UserController {
                         res.json({ token, dataLogin });
                     });
                 } else {
-                    throw new Error('Username or Password Invalid!');
+                    return res.status(400).json({ status: 'Failed', message: 'Password not correct' });
                 }
             } else {
-                throw new Error('Username or Password Invalid!');
+                return res.status(400).json({ status: 'Failed', message: 'Not found user' });
             }
         } catch(error) {
             return res.status(500).json({ status: 'Failed', message: error.message });
