@@ -8,7 +8,7 @@ const bodyParser = require("body-parser")
 const connectDB = require("./config/database")
 const app = express()
 const upload = multer();
-connectDB();
+connectDB(config.database.uri);
 app.use(morgan('dev'))
 app.use(cors())
 app.use(bodyParser.json({limit:'10mb'}))

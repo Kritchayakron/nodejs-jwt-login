@@ -1,15 +1,13 @@
 const User = require('../models/user')
 const bcrypt  = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-
+const mongoose = require('mongoose');
 class UserController {
     // Create
     static async create(req, res) {
         try{
             const {username , password, fullname} = req.body 
-            
             const dataUser = await User.findOne({username}).exec();
-           
             if (dataUser) {
                 return res.json({ status: 'Failed', message: 'This username already exists.' });
             }
@@ -31,7 +29,7 @@ class UserController {
 
             }
             
-        } catch(Err) {
+        } catch(error) {
             return res.status(500).json({ status: 'Failed', message: Err });
         
         }
@@ -39,24 +37,39 @@ class UserController {
   
     // Read
     static async getUser(req, res) {
+      if(!req.params.id) {
+        return res.status(400).json({ status: 'Failed', message: 'required id' });
+      }
+
       try{
             const id = req.params.id
-            const dataUser = await User.findOne({_id:id}).exec();
-            res.send(dataUser);
-        } catch(Err) {
-            res.status(500).send('Server Error');
-            
+            const objectId = new mongoose.Types.ObjectId(id);
+            const dataUser = await User.findOne({_id:objectId}).exec();
+            if (!dataUser) {
+                throw new Error('User not found');
+            }
+            return res.send(dataUser);
+        } catch(error) {
+            return res.status(500).json({ status: 'Failed', message: error.message });
         }
     }
   
     // Update
     static async update(req, res) {
+        if(!req.params.id) {
+            return res.status(400).json({ status: 'Failed', message: 'required id' });
+        }
         try{
+        
             const id = req.params.id
-            const dataUser = await User.findOneAndUpdate({_id:id},req.body,{new:true}).exec();
-            res.send(dataUser);
-        } catch(Err) {
-            res.status(500).send('Server Error');
+            const objectId = new mongoose.Types.ObjectId(id);
+            const dataUser = await User.findOneAndUpdate({_id:objectId},req.body,{new:true}).exec();
+            if (!dataUser) {
+                throw new Error('User not found for the given id');
+            }
+            return res.send(dataUser);
+        } catch(error) {
+            return res.status(500).json({ status: 'Failed', message: error.message });
         }
     }
   
@@ -65,9 +78,9 @@ class UserController {
         try{
             const id = req.params.id
             const dataUser = await User.findOneAndDelete({_id:id},req.body,{new:true}).exec();
-            res.send(dataUser);
-        } catch(Err) {
-            res.status(500).send('Server Error');
+            return res.send(dataUser);
+        } catch(error) {
+            return res.status(500).json({ status: 'Failed', message: error.message });
         }
     }
 
@@ -87,10 +100,10 @@ class UserController {
                     })
                 }
             } else {
-                res.status(500).send('Username or Password Invalid!');
+                throw new Error('Username or Password Invalid!');
             }
-        } catch(Err) {
-            res.status(500).send('Server Error');
+        } catch(error) {
+            return res.status(500).json({ status: 'Failed', message: error.message });
         
         }
     }
@@ -98,8 +111,8 @@ class UserController {
         try{
             const dataUser = await User.find({}).exec();
             res.send(dataUser);
-        } catch(Err) {
-            res.status(500).send('Server Error');
+        } catch(error) {
+            return res.status(500).json({ status: 'Failed', message: Err });
         }
 
     }
