@@ -3,7 +3,7 @@ dotenv.config({ path: './env/test.env' })
 const config = {
   // Express server configuration
   server: {
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3001,
     limit : process.env.limit || '10mb',
     // Add more server configurations if needed
   },
@@ -18,5 +18,4 @@ const config = {
   // ...
 
 };
-
 module.exports = config;
