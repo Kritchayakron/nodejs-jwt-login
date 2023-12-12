@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken")
 class UserController {
     // Create
     static async create(req, res) {
-        //console.log(req.body);
         try{
             const {username , password, fullname} = req.body 
             
@@ -33,7 +32,7 @@ class UserController {
             }
             
         } catch(Err) {
-            return res.status(500).json({ status: 'Failed', message: 'Server Error' });
+            return res.status(500).json({ status: 'Failed', message: Err });
         
         }
     }
