@@ -92,6 +92,7 @@ class UserController {
         
         try{
             const {username , password} = req.body 
+            console.log(username,password)
             if(!username || !password) {
                 return res.status(400).json({ status: 'Failed', message: 'Bad requrest' });
             }

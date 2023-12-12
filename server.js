@@ -18,4 +18,25 @@ readdirSync('./routes/api').map((r)=>{
     app.use('/api',require('./routes/api/'+r))
 });
 const port = config.server.port;
+const swaggerOptions = {
+    definition: {
+      openapi: '3.0.0', // Specify the OpenAPI version
+      info: {
+        title: 'Your API Title',
+        version: '1.0.0',
+        description: 'Description of your API',
+      },
+    },
+    servers:[
+        {
+            usl:'http//:localhost:3000',
+        },
+    ],
+    // Paths to the API docs
+    apis: ['./swagger/*.js'], // Replace with the path to your route files
+}
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+const swaggerUi = require('swagger-ui-express');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.listen(port, () => console.log('Server is running!', port));

@@ -13,4 +13,3 @@ router
 router.get('/users',AuthMiddleware.verifyToken, UserController.allUsers);
 
 module.exports = router;
-// 
