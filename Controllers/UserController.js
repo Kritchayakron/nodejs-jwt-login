@@ -2,6 +2,7 @@ const User = require('../models/user')
 const bcrypt  = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const mongoose = require('mongoose');
+const { validationResult } = require('express-validator');
 class UserController {
     // Create
     static async create(req, res) {
@@ -84,20 +85,29 @@ class UserController {
         }
     }
 
-    static async Login(req, res) {
+    static async login(req, res) {
+       
         try{
             const {username , password} = req.body 
+            if(!username || !password) {
+                return res.status(400).json({ status: 'Failed', message: 'Bad requrest' });
+            }
             const dataUser = await User.findOne({username:username}).exec();
             if(dataUser){
-                const isMatch = await bcrypt.compare(password,dataUser.password);
+                const isMatch = await bcrypt.compare(password.trim(), dataUser.password.trim());
                 if(isMatch) {
                     const dataLogin = {
                         username:username
                     }
-                    jwt.sign(dataLogin,'jwtsecret',{expiresIn:10},(err,token)=>{
-                        if(err) throw err;
-                        res.json({token,dataLogin});
-                    })
+                    jwt.sign(dataLogin, 'jwtsecret', { expiresIn: 10 }, (err, token) => {
+                        if (err) {
+                           // console.error(err);
+                            return res.status(500).json({ status: 'Failed', message: 'Token generation failed' });
+                        }
+                        res.json({ token, dataLogin });
+                    });
+                } else {
+                    throw new Error('Username or Password Invalid!');
                 }
             } else {
                 throw new Error('Username or Password Invalid!');

@@ -3,9 +3,14 @@ const router = express.Router();
 const UserController = require('../../controllers/UserController');
 const AuthMiddleware = require('../../middleware/AuthMiddleware');
 router.post('/user', UserController.create);
-router.get('/user/:id',AuthMiddleware.verifyToken, UserController.getUser);
+router.post('/login', UserController.login);
+router.use(AuthMiddleware.verifyToken);
+router
+    .route('/user/:id')
+    .get(UserController.getUser)
+    .patch(UserController.update)
+    .delete(UserController.delete);
 router.get('/users',AuthMiddleware.verifyToken, UserController.allUsers);
-router.put('/user/:id',AuthMiddleware.verifyToken, UserController.update);
-router.delete('/user/:id',AuthMiddleware.verifyToken, UserController.delete);
-router.post('/login', UserController.Login);
+
 module.exports = router;
+// 
