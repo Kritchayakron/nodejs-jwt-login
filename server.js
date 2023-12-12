@@ -1,6 +1,5 @@
 const express = require("express")
-require('dotenv').config({ path: './env/test.env' })
-const port = process.env.PORT || 3000;
+const config = require("./config"); 
 const {readdirSync} = require("fs")
 const morgan = require("morgan")
 const cors = require("cors")
@@ -18,4 +17,5 @@ app.use(upload.array()); // Use multer to handle form-data
 readdirSync('./routes/api').map((r)=>{
     app.use('/api',require('./routes/api/'+r))
 });
-app.listen(port,()=>console.log('Server is running!',port))
+const port = config.server.port;
+app.listen(port, () => console.log('Server is running!', port));
